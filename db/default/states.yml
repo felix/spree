@@ -254,3 +254,32 @@ states_009:
   country_id: "214"
   id: "91367981"
   abbr: WV
+
+states_a01:
+  name: Australian Capital Territory
+  country_id: 12
+  abbr: ACT
+states_a02:
+  name: New South Wales
+  country_id: 12
+  abbr: NSW
+states_a03:
+  name: Northern Territory
+  country_id: 12
+  abbr: NT
+states_a04:
+  name: Queensland
+  country_id: 12
+  abbr: QLD
+states_a05:
+  name: Tasmania
+  country_id: 12
+  abbr: TAS
+states_a06:
+  name: Victoria
+  country_id: 12
+  abbr: VIC
+states_a07:
+  name: Western Australia
+  country_id: 12
+  abbr: WA
