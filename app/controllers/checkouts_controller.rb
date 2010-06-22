@@ -30,7 +30,6 @@ class CheckoutsController < Spree::BaseController
 
     # call the edit hooks for the current step in case we experience validation failure and need to edit again
     edit_hooks
-    @checkout.enable_validation_group(@checkout.state.to_sym)
     @prev_state = @checkout.state
 
     before :update
@@ -144,7 +143,8 @@ class CheckoutsController < Spree::BaseController
   end
 
   def next_step
-    @checkout.next!
+    @checkout.next! 
+    flash[:analytics] = "/checkout/#{object.state}"
     # call edit hooks for this next step since we're going to just render it (instead of issuing a redirect)
     edit_hooks
   end

@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-SPREE_GEM_VERSION = '0.10.99' unless defined? SPREE_GEM_VERSION
+SPREE_GEM_VERSION = '0.11.0' unless defined? SPREE_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -37,7 +37,7 @@ Spree::Initializer.run do |config|
   config.gem 'whenever', :lib => false, :version => '0.3.7'
   config.gem 'searchlogic', :version => '2.3.5'
   config.gem 'will_paginate', :lib => 'will_paginate', :version => '2.3.14'
-  config.gem 'state_machine', :lib => 'state_machine', :version => '0.8.0'
+  config.gem 'state_machine', :lib => 'state_machine', :version => '0.9.2'
   config.gem "faker", :version => '0.3.1'
   config.gem 'paperclip', :version => '>=2.3.1.1'
   config.gem 'ruby-openid', :lib => "openid", :version => '>=2.0.4'
@@ -77,7 +77,7 @@ Spree::Initializer.run do |config|
 
   # The internationalization framework can be changed to have another default locale (standard is :en) or more load paths.
   # All files from config/locales/*.rb,yml are added automatically.
-  #config.i18n.load_path << Dir[File.join(RAILS_ROOT, 'my', 'locales', '*.{rb,yml}')]
+  #config.i18n.load_path << Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   config.i18n.default_locale = :'en'
 
 end

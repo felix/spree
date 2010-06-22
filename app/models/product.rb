@@ -68,7 +68,7 @@ class Product < ActiveRecord::Base
   named_scope :on_hand,     { :conditions => "products.count_on_hand > 0" }
   named_scope :not_deleted, { :conditions => "products.deleted_at is null" }
   named_scope :available,   lambda { |*args| { :conditions => ["products.available_on <= ?", args.first || Time.zone.now] } }
-  
+
   if (ActiveRecord::Base.connection.adapter_name == 'PostgreSQL')
     named_scope :group_by_products_id, { :group => "products." + Product.column_names.join(", products.") } if ActiveRecord::Base.connection.tables.include?("products")
   else
@@ -135,6 +135,14 @@ class Product < ActiveRecord::Base
     master.in_stock? || !!variants.detect{|v| v.in_stock?}
   end
 
+  def tax_category
+    if self[:tax_category_id].nil?
+      TaxCategory.first(:conditions => {:is_default => true})
+    else
+      TaxCategory.find(self[:tax_category_id])
+    end
+  end
+
   # Adding properties and option types on creation based on a chosen prototype
   attr_reader :prototype_id
   def prototype_id=(value)
@@ -185,7 +193,7 @@ class Product < ActiveRecord::Base
   # allows extensions to override deleted? if they want to provide
   # their own definition.
   def deleted?
-    deleted_at
+    !!deleted_at
   end
 
   # split variants list into hash which shows mapping of opt value onto matching variants
@@ -223,5 +231,5 @@ class Product < ActiveRecord::Base
 
   def update_memberships
     self.product_groups = ProductGroup.all.select{|pg| pg.include?(self)}
-  end  
+  end
 end
