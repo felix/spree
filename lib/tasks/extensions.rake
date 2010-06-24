@@ -231,5 +231,5 @@ end
 
 # Load any custom rakefiles from extensions
 [Rails.root, SPREE_ROOT].uniq.each do |root|
-  Dir[root + '/vendor/extensions/*/lib/tasks/*.rake'].sort.each { |ext| load ext }
+  Dir[root.to_s + '/vendor/extensions/*/lib/tasks/*.rake'].sort.each { |ext| load ext }
 end
