@@ -9,7 +9,7 @@ gem 'resource_controller', :git => "git://github.com/BDQ/resource_controller.git
 
 gem 'mysql'
 gem 'sqlite3-ruby'
-gem 'ruby-debug'
+gem RUBY_VERSION.include?('1.9') ? 'ruby-debug19' : 'ruby-debug'
 gem "rdoc",  "2.2"
 
 group :test do
