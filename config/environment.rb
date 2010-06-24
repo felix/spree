@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Be sure to restart your web server when you modify this file.
 
 # Uncomment below to force Rails into production mode when
@@ -99,4 +100,10 @@ Time::DATE_FORMATS[:short_date] = "%Y-%m-%d"
 # Mime::Type.register "application/x-mobile", :mobile
 
 # Include your application configuration below
+=======
+# Load the rails application
+require File.expand_path('../application', __FILE__)
+>>>>>>> b8b127c992fd17528820fed4c9ca43eed518b9fe
 
+# Initialize the rails application
+Spree::Application.initialize!

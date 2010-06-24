@@ -38,25 +38,23 @@ module Scopes::Product
     :descend_by_master_price,
     :descend_by_popularity,
   ]
-  
+
+  #RAILS3 TODO - scopes are duplicated here and in model/product.rb - can we DRY it up?
   # default product scope only lists available and non-deleted products
-  ::Product.named_scope :active,      lambda { |*args|
-    Product.not_deleted.available(args.first).scope(:find)
-  }
+  # ::Product.scope :not_deleted, lambda { where("products.deleted_at is null") }
+  # ::Product.scope :available,   lambda { |*args|
+  #    where("products.available_on <= ?", args.first || Time.zone.now)
+  # }
+  # ::Product.scope :active,      lambda { |*args|
+  #   Product.not_deleted.available(args.first).scope(:find)
+  # }
 
-  ::Product.named_scope :not_deleted, {
-    :conditions => "products.deleted_at is null"
-  }
-  ::Product.named_scope :available,   lambda { |*args|
-    { :conditions => ["products.available_on <= ?", args.first || Time.zone.now] }
-  }
-
-  ::Product.named_scope :keywords, lambda{|query|
+  ::Product.scope :keywords, lambda{|query|
     return {} if query.blank?
     Spree::Config.searcher.get_products_conditions_for(query)
   }
 
-  ::Product.named_scope :price_between, lambda {|low,high|
+  ::Product.scope :price_between, lambda {|low,high|
     { :joins => :master, :conditions => ["variants.price BETWEEN ? AND ?", low, high] }
   }
 
@@ -65,7 +63,7 @@ module Scopes::Product
   #
   #   Product.taxons_id_eq(x)
   #
-  Product.named_scope :in_taxon, lambda {|taxon|
+  Product.scope :in_taxon, lambda {|taxon|
     Product.in_taxons(taxon).scope :find
   }
 
@@ -74,21 +72,21 @@ module Scopes::Product
   #
   #   Product.taxons_id_eq([x,y])
   #
-  Product.named_scope :in_taxons, lambda {|*taxons|
+  Product.scope :in_taxons, lambda {|*taxons|
     taxons = get_taxons(taxons)
     taxons.first ? prepare_taxon_conditions(taxons) : {}
   }
 
   # for quick access to products in a group, WITHOUT using the association mechanism
-  Product.named_scope :in_cached_group, lambda {|product_group| 
-    { :joins => "JOIN product_groups_products ON products.id = product_groups_products.product_id", 
-      :conditions => ["product_groups_products.product_group_id = ?", product_group] 
+  Product.scope :in_cached_group, lambda {|product_group|
+    { :joins => "JOIN product_groups_products ON products.id = product_groups_products.product_id",
+      :conditions => ["product_groups_products.product_group_id = ?", product_group]
     }
   }
 
 
   # a scope that finds all products having property specified by name, object or id
-  Product.named_scope :with_property, lambda {|property|
+  Product.scope :with_property, lambda {|property|
     conditions = case property
     when String   then ["properties.name = ?", property]
     when Property then ["properties.id = ?", property.id]
@@ -102,7 +100,7 @@ module Scopes::Product
   }
 
   # a scope that finds all products having an option_type specified by name, object or id
-  Product.named_scope :with_option, lambda {|option|
+  Product.scope :with_option, lambda {|option|
     conditions = case option
     when String     then ["option_types.name = ?", option]
     when OptionType then ["option_types.id = ?",   option.id]
@@ -117,7 +115,7 @@ module Scopes::Product
 
   # a simple test for product with a certain property-value pairing
   # note that it can test for properties with NULL values, but not for absent values
-  Product.named_scope :with_property_value, lambda { |property, value|
+  Product.scope :with_property_value, lambda { |property, value|
     conditions = case property
     when String   then ["properties.name = ?", property]
     when Property then ["properties.id = ?", property.id]
@@ -129,10 +127,10 @@ module Scopes::Product
       :joins => :properties,
       :conditions => conditions
     }
-  } 
+  }
 
   # a scope that finds all products having an option value specified by name, object or id
-  Product.named_scope :with_option_value, lambda {|option, value|
+  Product.scope :with_option_value, lambda {|option, value|
     option_type_id = case option
     when String
       option_type = OptionType.find_by_name(option) || option.to_i
@@ -153,24 +151,25 @@ module Scopes::Product
   }
 
   # finds product having option value OR product_property
-  Product.named_scope :with, lambda{|value|
+  Product.scope :with, lambda{|value|
     {
       :conditions => ["option_values.name = ? OR product_properties.value = ?", value, value],
       :joins => {:variants => :option_values, :product_properties => []}
     }
   }
 
-  Product.scope_procedure :in_name, lambda{|words|
-    Product.name_like_any(prepare_words(words))
-  }
-
-  Product.scope_procedure :in_name_or_keywords, lambda{|words|
-    Product.name_or_meta_keywords_like_any(prepare_words(words))
-  }
-
-  Product.scope_procedure :in_name_or_description, lambda{|words|
-    Product.name_or_description_or_meta_description_or_meta_keywords_like_any(prepare_words(words))
-  }
+  # Rails 3 TODO
+  # Product.scope_procedure :in_name, lambda{|words|
+  #   Product.name_like_any(prepare_words(words))
+  # }
+  #
+  # Product.scope_procedure :in_name_or_keywords, lambda{|words|
+  #   Product.name_or_meta_keywords_like_any(prepare_words(words))
+  # }
+  #
+  # Product.scope_procedure :in_name_or_description, lambda{|words|
+  #   Product.name_or_description_or_meta_description_or_meta_keywords_like_any(prepare_words(words))
+  # }
 
   # Sorts products from most popular (poularity is extracted from how many
   # times use has put product in cart, not completed orders)
@@ -178,7 +177,7 @@ module Scopes::Product
   # there is alternative faster and more elegant solution, it has small drawback though,
   # it doesn stack with other scopes :/
   #
-  Product.named_scope :descend_by_popularity, lambda{
+  Product.scope :descend_by_popularity, lambda{
     # :joins => "LEFT OUTER JOIN (SELECT line_items.variant_id as vid, COUNT(*) as cnt FROM line_items GROUP BY line_items.variant_id) AS popularity_count ON variants.id = vid",
     # :order => 'COALESCE(cnt, 0) DESC'
     {
@@ -205,7 +204,7 @@ SQL
     a = words.split(/[,\s]/).map(&:strip)
     a.any? ? a : ['']
   end
-  
+
   def self.arguments_for_scope_name(name)
     if group = Scopes::Product::SCOPES.detect{|k,v| v[name.to_sym]}
       group[1][name.to_sym]

@@ -67,7 +67,11 @@ class ExtensionControllerGenerator < ControllerGenerator
   end
 
   def destination_root
+<<<<<<< HEAD
     Rails.root.join(extension_path)
+=======
+    Rails.root.join(, extension_path)
+>>>>>>> b8b127c992fd17528820fed4c9ca43eed518b9fe
   end
 
   def extension_uses_rspec?

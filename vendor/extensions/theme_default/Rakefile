@@ -91,7 +91,11 @@ namespace :spec do
       task :load => :environment do
         require 'active_record/fixtures'
         ActiveRecord::Base.establish_connection(RAILS_ENV.to_sym)
+<<<<<<< HEAD
         (ENV['FIXTURES'] ? ENV['FIXTURES'].split(/,/) : Dir.glob(Rails.root.join('spec', 'fixtures', '*.{yml,csv}'))).each do |fixture_file|
+=======
+        (ENV['FIXTURES'] ? ENV['FIXTURES'].split(/,/) : Dir.glob(Rails.root.join(, 'spec', 'fixtures', '*.{yml,csv}'))).each do |fixture_file|
+>>>>>>> b8b127c992fd17528820fed4c9ca43eed518b9fe
           Fixtures.create_fixtures('spec/fixtures', File.basename(fixture_file, '.*'))
         end
       end
