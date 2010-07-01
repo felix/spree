@@ -1,6 +1,6 @@
 class Spree::BaseController < ActionController::Base
   layout 'spree_application'
-  helper :application, :hook
+  helper :hook
   before_filter :instantiate_controller_and_action_names
   #RAILS 3 TODO
   #before_filter :touch_sti_subclasses
@@ -60,11 +60,11 @@ class Spree::BaseController < ActionController::Base
   def default_title
     Spree::Config[:site_name]
   end
-  
+
   def accurate_title
     return nil
   end
-  
+
   def reject_unknown_object
     # workaround to catch problems with loading errors for permalink ids (reconsider RC permalink hack elsewhere?)
     begin
@@ -181,14 +181,14 @@ class Spree::BaseController < ActionController::Base
   #   if RAILS_ENV == 'development'
   #     load(File.join(SPREE_ROOT,'config/initializers/touch.rb'))
   #   end
-  # end       
+  # end
 
   def set_user_language
     #RAILS 3 TODO
     # locale = session[:locale] || Spree::Config[:default_locale] || I18n.default_locale
     # locale = AVAILABLE_LOCALES.keys.include?(locale) ? locale : I18n.default_locale
-    # I18n.locale = locale   
-    
+    # I18n.locale = locale
+
     I18n.locale = :en
   end
 

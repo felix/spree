@@ -31,7 +31,7 @@ class Admin::AdjustmentsController < Admin::BaseController
   # Automatically complete and order where no payment is necessary because adjustments cancel out the total
   def set_order_state
     @order.update_totals!
-
+    
     if @order.in_progress? and @order.item_total > 0 and @order.total == 0 and @order.payments.total == 0  #for new orders that are adjusted to zero
       until @order.checkout.complete?
         @order.checkout.next!

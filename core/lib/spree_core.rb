@@ -45,6 +45,10 @@ require 'spree_core/ssl_requirement'
 require 'spree_core/preferences/mail_settings'
 require 'spree_core/preferences/model_hooks'
 require 'spree_core/preferences/preference_definition'
+require 'spree_core/role_requirement_system'
+require 'spree_core/easy_role_requirement_system'
+require 'store_helpers'
+require 'spree/file_utilz'
 
 ActiveRecord::Base.class_eval { include HasCalculator }
 
@@ -57,4 +61,8 @@ if defined?(ActionView)
   ActionView::Base.class_eval do
     include CollectiveIdea::Acts::NestedSet::Helper
   end
+end
+
+ActiveSupport.on_load(:action_view) do
+  include StoreHelpers
 end
